@@ -39,10 +39,11 @@ flowchart LR
 
 ## 環境變數
 
-Backend 需要嘅環境變數請參考 [backend/.env.example](backend/.env.example)。複製為 `.env` 後填入：
+環境變數請參考專案根目錄 [.env.example](.env.example)。複製為根目錄 `.env` 後填入（Docker Compose 同本地跑 backend 都會用呢個檔）：
 
-- `OPENAI_API_KEY`（如使用 OpenAI）
-- `DEEPSEEK_API_KEY`（如使用 DeepSeek）
+- `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB`（Postgres）
+- `DATABASE_URL`（本機開發用 `localhost:5432`；Docker 會自動 override 為 `db:5432`）
+- `OPENAI_API_KEY`、`DEEPSEEK_API_KEY`（如使用）
 
 ## 安裝與執行
 

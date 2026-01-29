@@ -1,6 +1,10 @@
 """FastAPI application entry point."""
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db import get_db
 
 app = FastAPI(
     title="Trading Agents API",
@@ -10,8 +14,12 @@ app = FastAPI(
 
 
 @app.get("/health")
-async def health():
-    """Health check endpoint."""
+async def health(db: AsyncSession = Depends(get_db)):
+    """Health check endpoint; verifies DB connectivity."""
+    try:
+        await db.execute(text("SELECT 1"))
+    except Exception:
+        return {"status": "error", "database": "unhealthy"}
     return {"status": "ok"}
 
 
