@@ -1,0 +1,34 @@
+---
+description: 本專案僅用 uv（backend）與 yarn（frontend）作為套件管理，勿用 pip/npm/pnpm 等
+alwaysApply: true
+---
+
+# 套件管理規則
+
+本專案為 monorepo：Backend 用 **uv**，Frontend 用 **yarn**。撰寫指令或建議時只使用以下方式。
+
+## Backend（`backend/`）
+
+- **安裝依賴**：`uv sync`
+- **執行腳本**：`uv run main.py` 或 `uv run python main.py`、`uv run <module>`
+- **新增依賴**：`uv add <pkg>`（開發依賴：`uv add --dev <pkg>`）
+
+勿用 `pip`、`pipenv`、`poetry` 等。
+
+## Frontend（`frontend/`）
+
+- **安裝依賴**：`yarn`
+- **執行腳本**：`yarn dev`、`yarn build`、`yarn start`、`yarn <script>`
+- **新增依賴**：`yarn add <pkg>`（開發依賴：`yarn add -D <pkg>`）
+
+勿用 `npm`、`pnpm`、`bun` 等。
+
+## 範例
+
+```bash
+# Backend
+cd backend && uv sync && uv run main.py
+
+# Frontend
+cd frontend && yarn && yarn dev
+```

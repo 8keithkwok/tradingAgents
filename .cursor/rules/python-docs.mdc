@@ -1,0 +1,80 @@
+---
+description: Python 模組、函數、類別須用 docstring（Google style），含 Args/Returns/Raises
+globs: backend/**/*.py
+alwaysApply: false
+---
+
+# Python 註解規則（pydoc / docstring）
+
+Backend Python 檔案須遵循以下 docstring 慣例。
+
+## 模組
+
+檔案頂部用 docstring 說明模組用途（一行或多行 `"""..."""`）。
+
+```python
+"""Trading Agents API - FastAPI + LangChain backend."""
+```
+
+## 函數／方法
+
+每個函數或方法都要有 docstring，格式採用 **Google style**：
+
+- 第一行：簡短摘要
+- `Args:`：參數說明（如有）
+- `Returns:`：回傳值說明（如有）
+- `Raises:`：可能拋出嘅例外（如有）
+
+### 好範例
+
+```python
+@app.get("/health")
+async def health():
+    """Health check endpoint.
+
+    Returns:
+        dict: 包含 status 嘅 JSON，例如 {"status": "ok"}。
+    """
+    return {"status": "ok"}
+```
+
+```python
+def fetch_quote(symbol: str, exchange: str) -> float:
+    """從交易所取得指定代號嘅報價。
+
+    Args:
+        symbol: 交易代號，例如 "AAPL"。
+        exchange: 交易所代碼。
+
+    Returns:
+        最新成交價。
+
+    Raises:
+        ConnectionError: 無法連接交易所時。
+    """
+    ...
+```
+
+### 壞範例
+
+```python
+@app.get("/health")
+async def health():
+    return {"status": "ok"}  # 無 docstring
+```
+
+```python
+def fetch_quote(symbol, exchange):
+    # gets price  # 用 comment 代替 docstring，且無 Args/Returns
+    ...
+```
+
+## 類別
+
+類別上方要有 docstring 說明職責。
+
+```python
+class OrderBook:
+    """維護單一標的嘅買賣盤佇列，支援撮合查詢。"""
+    ...
+```

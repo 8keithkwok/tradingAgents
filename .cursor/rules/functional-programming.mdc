@@ -1,0 +1,75 @@
+---
+description: 本專案前後端以函數式編程為主：純函數、少可變狀態、組合優於繼承
+alwaysApply: true
+---
+
+# 函數式編程為主
+
+Backend（Python）同 Frontend（TypeScript/React）都以 **函數式編程** 為主要風格。
+
+## 共通原則
+
+- **純函數優先**：相同輸入得到相同輸出，避免隱藏副作用。
+- **少可變狀態**：盡量用不可變數據，更新時造新值而唔直接改舊值。
+- **組合優於繼承**：用函數組合、高階函數，少用類與繼承。
+- **明確副作用**：I/O、API 呼叫等集中喺邊緣，核心邏輯保持純粹。
+
+## Backend（Python）
+
+- 業務邏輯用 **純函數**，參數入、回傳出，唔依賴全局或隱藏狀態。
+- 多用 **高階函數**（`map`、`filter`、compose）、少用類；若要有狀態，優先考慮閉包或細小嘅無狀態函數組合。
+- 避免類內部 mutable 屬性亂改；若必須用 class，保持方法接近純函數（同參數決定同結果）。
+- FastAPI 路由 handler 保持薄：解析請求後交俾純函數處理，再組裝回應。
+
+### 好
+
+```python
+def total_pnl(trades: list[dict]) -> float:
+    """純函數：由 trades 計算總盈虧。"""
+    return sum(t.get("pnl", 0) for t in trades)
+
+@app.get("/pnl")
+async def get_pnl():
+    trades = await fetch_trades()  # 副作用在邊緣
+    return {"total": total_pnl(trades)}
+```
+
+### 壞
+
+```python
+total = 0
+def add_pnl(trades):
+    global total  # 可變全局狀態
+    for t in trades:
+        total += t.get("pnl", 0)
+```
+
+## Frontend（TypeScript / React）
+
+- **只用函數組件**，唔用 class component。
+- 狀態用 `useState` / `useReducer`，更新時用 **不可變** 寫法（spread、新 array/object），唔好直接 mutate state。
+- 可重用邏輯放 **custom hooks**，保持組件薄、邏輯可測試。
+- 純計算、格式化等抽成 **純函數**（唔依賴 React state 喺函數內部），方便測試同重用。
+- 副作用只喺 `useEffect`、event handler、data fetching 等邊緣做，組件盡量係「純渲染 + 組合」。
+
+### 好
+
+```tsx
+function formatPrice(value: number): string {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
+}
+
+export default function PriceDisplay({ amount }: { amount: number }) {
+  return <span>{formatPrice(amount)}</span>;
+}
+```
+
+### 壞
+
+```tsx
+let cached = "";
+function PriceDisplay({ amount }: { amount: number }) {
+  cached = formatPrice(amount);  // 可變模組級狀態、副作用混入渲染
+  return <span>{cached}</span>;
+}
+```

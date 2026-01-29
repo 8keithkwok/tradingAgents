@@ -1,0 +1,90 @@
+---
+description: 導出嘅函數、React 組件、自訂 hook 須加 JSDoc，含 @param、@returns、必要時 @example
+globs: frontend/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# TypeScript / JavaScript 註解規則（JSDoc）
+
+Frontend 導出嘅函數、React 組件、自訂 hook 須加上 **JSDoc**（`/** ... */`）。
+
+## 基本要求
+
+- 至少包含：`@param`（參數）、`@returns`（回傳）
+- 需要時可加 `@example`
+
+## React 組件
+
+簡述用途，並用 `@param` 描述 props（或對應 type/interface）。
+
+### 好範例
+
+```tsx
+/**
+ * 首頁：展示入門指引與連結。
+ * @returns 首頁 React 節點
+ */
+export default function Home() {
+  return (
+    <div>...</div>
+  );
+}
+```
+
+```tsx
+interface HomeProps {
+  /** 頁面標題 */
+  title: string;
+}
+
+/**
+ * 首頁組件，可自訂標題。
+ * @param props - 組件 props
+ * @param props.title - 顯示嘅標題
+ * @returns 首頁 React 節點
+ */
+export default function Home({ title }: HomeProps) {
+  return <h1>{title}</h1>;
+}
+```
+
+### 自訂 Hook
+
+```ts
+/**
+ * 取得當前用戶嘅交易偏好。
+ * @returns 偏好設定與更新函數
+ * @example
+ * const [prefs, setPrefs] = useTradingPrefs();
+ */
+export function useTradingPrefs() {
+  ...
+}
+```
+
+### 壞範例
+
+```tsx
+export default function Home() {
+  return <div>...</div>;  // 無 JSDoc
+}
+```
+
+```tsx
+// 首頁組件
+export default function Home() { ... }  // 用 comment 代替 JSDoc，且無 @param/@returns
+```
+
+## 導出函數
+
+```ts
+/**
+ * 將價格格式化為本地貨幣字串。
+ * @param value - 數值
+ * @param currency - 貨幣代碼，預設 "USD"
+ * @returns 格式化後嘅字串
+ */
+export function formatPrice(value: number, currency = "USD"): string {
+  ...
+}
+```
